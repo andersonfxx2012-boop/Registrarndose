@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Registro con Historial Protegido</title>
+
+<style>
+body{
+    font-family: Arial;
+    text-align: center;
+}
+
+button{
+    padding: 15px 30px;
+    font-size: 18px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+#btnHistorial{
+    font-size: 24px;
+    padding: 20px 40px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+#btnHistorial:hover{
+    background-color: #0056b3;
+}
+
+#historial{
+    margin-top: 20px;
+    border: 2px solid black;
+    padding: 15px;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}
+</style>
+
+</head>
+<body>
+
+<h2>Formulario de Registro</h2>
+
+<form onsubmit="registrarUsuario(event)">
+  
+  <label>Nombre:</label><br>
+  <input type="text" id="nombre" required><br><br>
+  
+  <label>Correo:</label><br>
+  <input type="email" id="correo" required><br><br>
+  
+  <label>Contraseña:</label><br>
+  <input type="password" id="password" required><br><br>
+  
+  <button type="submit">Enviar</button>
+
+</form>
+
+<br>
+
+<button id="btnHistorial" onclick="pedirClave()">
+VER HISTORIAL 🔒
+</button>
+
+<h3>Historial:</h3>
+<div id="historial"></div>
+
+<script>
+
+function registrarUsuario(event) {
+    event.preventDefault();
+
+    let nombre = document.getElementById("nombre").value;
+    let correo = document.getElementById("correo").value;
+    let password = document.getElementById("password").value;
+
+    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+    usuarios.push({
+        nombre: nombre,
+        correo: correo,
+        password: password
+    });
+
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+    alert("Registro guardado correctamente");
+
+    document.querySelector("form").reset();
+}
+
+function pedirClave() {
+
+    let clave = prompt("Ingrese la contraseña para ver el historial:");
+
+    if(clave === "1983"){
+        mostrarHistorial();
+    }
+    else{
+        alert("Acceso denegado");
+    }
+
+}
+
+function mostrarHistorial(){
+
+    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+    let html = "";
+
+    for(let i=0; i<usuarios.length; i++){
+
+        html += "<p>";
+        html += "<b>Usuario " + (i+1) + "</b><br>";
+        html += "Nombre: " + usuarios[i].nombre + "<br>";
+        html += "Correo: " + usuarios[i].correo + "<br>";
+        html += "Contraseña: " + usuarios[i].password;
+        html += "</p><hr>";
+
+    }
+
+    document.getElementById("historial").innerHTML = html;
+
+}
+
+</script>
+
+</body>
+</html>
